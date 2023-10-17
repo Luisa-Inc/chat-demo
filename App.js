@@ -6,6 +6,10 @@ import Chat from "./components/Chat";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+// Import necessary modules and components
+import React from "react";
+
+
 // Create the navigator
 const Stack = createNativeStackNavigator();
 
