@@ -1,92 +1,55 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
+  ImageBackground,
   StyleSheet,
-  View,
   Text,
   TextInput,
-  ImageBackground,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  ScrollView,
+  View,
 } from "react-native";
-
-const image = require("../assets/Background Image.png");
-
-const backgroundColors = {
-  a: "#090C08",
-  b: "#474056",
-  c: "#8A95A5",
-  d: "#B9C6AE",
-};
+import Chat from "./Chat";
 
 const Start = ({ navigation }) => {
-  const [name, setName] = useState("");
-  const [color, setColor] = useState(backgroundColors.a);
+  const [username, setUsername] = useState("");
+  const [background, setBackground] = useState("white");
+  const colors = ["#090C08", "#474056", "#8A95A5", "#B9C6AE"];
 
   return (
-    <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-      <ScrollView contentContainerStyle={styles.container}>
-        {/* Render the Chat App title */}
-        <Text style={styles.appTitle}>Chat App</Text>
-        <View style={styles.inputContainer}>
-          <KeyboardAvoidingView
-            style={styles.inputContainer}
-            behavior="padding"
-            enabled
-          >
-            {/* Input field for user's nickname */}
-            <TextInput
-              style={styles.textInput}
-              value={name}
-              onChangeText={setName}
-              placeholder="Nickname"
-              placeholderTextColor="#757083"
+    // Background image for the whole screen
+    <ImageBackground
+      source={require("../assets/BackgroundImage.png")}
+      style={styles.container}
+    >
+      <Text style={styles.title}>Cat App</Text>
+      <View style={styles.content}>
+        <TextInput
+          placeholder="Please enter your name..."
+          style={styles.input}
+          onChangeText={(val) => setUsername(val)}
+        />
+        <Text style={styles.text}>Choose your background color:</Text>
+        <View style={styles.colorlist}>
+          {colors.map((color, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.box,
+                { backgroundColor: color },
+                background === color && styles.selected,
+              ]}
+              onPress={() => setBackground(color)}
             />
-            <Text style={styles.textColorSelector}>
-              Choose background color:
-            </Text>
-            <View style={styles.colorSelector}>
-              {/* Background color selection buttons */}
-              <TouchableOpacity
-                style={[
-                  styles.circle,
-                  color === backgroundColors.a && styles.selectedCircle,
-                  { backgroundColor: backgroundColors.a },
-                ]}
-                onPress={() => setColor(backgroundColors.a)}
-              ></TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.circle,
-                  color === backgroundColors.b && styles.selectedCircle,
-                  { backgroundColor: backgroundColors.b },
-                ]}
-                onPress={() => setColor(backgroundColors.b)}
-              ></TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.circle,
-                  color === backgroundColors.c && styles.selectedCircle,
-                  { backgroundColor: backgroundColors.c },
-                ]}
-                onPress={() => setColor(backgroundColors.c)}
-              ></TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.circle,
-                  color === backgroundColors.d && styles.selectedCircle,
-                  { backgroundColor: backgroundColors.d },
-                ]}
-                onPress={() => setColor(backgroundColors.d)}
-              ></TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
-          {/* Button to start chatting */}
-          <TouchableOpacity style={styles.button} onPress={signInUser}>
-            <Text style={styles.buttonText}>Start Chatting</Text>
-          </TouchableOpacity>
+          ))}
         </View>
-      </ScrollView>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            navigation.navigate("Chat", { name: username, color: background })
+          }
+        >
+          <Text style={styles.buttonText}>Start chatting</Text>
+        </TouchableOpacity>
+      </View>
     </ImageBackground>
   );
 };
@@ -94,62 +57,64 @@ const Start = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingBottom: 50,
   },
-  image: {
-    flex: 1,
-    justifyContent: 'space-between',
-    padding: '6%',
+  content: {
+    width: "88%",
+    height: "44%",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
   },
-  appTitle: {
-    fontSize: 45,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    alignSelf: 'center',
-  },
-  inputContainer: {
-    backgroundColor: '#FFFFFF',
-    padding: '6%',
-    paddingBottom: 20,
-  },
-  textInput: {
-    fontSize: 16,
-    fontWeight: '300',
-    color: '#757083',
-    padding: 15,
+  input: {
+    width: "88%",
     borderWidth: 1,
-    borderColor: '#757083',
-    marginTop: 15,
-    marginBottom: 15,
-  },
-  textColorSelector: {
+    padding: 15,
+    margin: 10,
+    borderColor: "black",
     fontSize: 16,
-    fontWeight: '300',
-    color: '#8A95A5',
-    marginBottom: 10,
+    fontWeight: "600",
+    color: "#757083",
+    marginTop: 20,
   },
-  colorSelector: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
+  colorlist: {
+    flexDirection: "row",
   },
-  circle: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-  },
-  selectedCircle: {
-    borderWidth: 2,
-    borderColor: '#FF0000',
+  box: {
+    width: 30,
+    height: 30,
+    margin: 10,
+    borderRadius: 15,
   },
   button: {
-    backgroundColor: '#757083',
-    padding: 10,
+    width: "88%",
+    margin: 20,
+    padding: 20,
+    alignItems: "center",
+    backgroundColor: "#757083",
   },
   buttonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "300",
+    color: "#757083",
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 45,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    marginTop: 70,
+  },
+  selected: {
+    borderWidth: 1,
+    borderColor: "red",
   },
 });
 
