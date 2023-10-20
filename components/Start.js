@@ -20,7 +20,7 @@ const Start = ({ navigation }) => {
       source={require("../assets/BackgroundImage.png")}
       style={styles.container}
     >
-      <Text style={styles.title}>Cat App</Text>
+      <Text style={styles.title}>Chat App</Text>
       <View style={styles.content}>
         <TextInput
           placeholder="Please enter your name..."
