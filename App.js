@@ -1,7 +1,3 @@
-//import components
-import Start from "./components/Start";
-import Chat from "./components/Chat";
-
 // import react Navigation
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -24,6 +20,11 @@ import {
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+
+//import the screens
+import Start from "./components/Start";
+import Chat from "./components/Chat";
+
 
 // Firebase configuration object
 const App = () => {
