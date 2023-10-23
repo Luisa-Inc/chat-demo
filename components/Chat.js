@@ -106,7 +106,6 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
         onSend={(messages) => onSend(messages)}
-        renderCustomView={renderCustomView}
         user={{
           _id: userID, // Extract the user ID from route.params
           name: name, // Extract the name from route.params
