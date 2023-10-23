@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { getAuth, signInAnonymously } from "firebase/auth";
 
-const image = require("../images/BackgroundImage.png");
+const image = require("../assets/BackgroundImage.png");
 
 const backgroundColors = {
   a: "#090C08",
