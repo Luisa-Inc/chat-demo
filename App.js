@@ -29,13 +29,12 @@ import Chat from "./components/Chat";
 // Firebase configuration object
 const App = () => {
   const firebaseConfig = {
-    apiKey: "AIzaSyBFpzV36z1cz3h0NjyAj3AchHtSxheM6CM",
-    authDomain: "chatapp-b23ab.firebaseapp.com",
-    projectId: "chatapp-b23ab",
-    storageBucket: "chatapp-b23ab.appspot.com",
-    messagingSenderId: "232082015281",
-    appId: "1:232082015281:web:075de60af6adfb48f74110",
-    measurementId: "G-H8Y852PNWW",
+    apiKey: "AIzaSyDW7DaEqhhoCUjl-Dn2g6uyNnRxkgXQsj8",
+    authDomain: "chat-app-b633c.firebaseapp.com",
+    projectId: "chat-app-b633c",
+    storageBucket: "chat-app-b633c.appspot.com",
+    messagingSenderId: "788435523936",
+    appId: "1:788435523936:web:25cdcc88e92603e5c36605",
   };
 
 // Initialize Firebase
