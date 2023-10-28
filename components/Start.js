@@ -10,9 +10,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-<<<<<<< Updated upstream
-import { getAuth, signInAnonymously } from "firebase/auth";
-=======
+
 import {
   signInAnonymously,
   initializeAuth,
@@ -20,8 +18,6 @@ import {
 } from "firebase/auth";
 
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-
->>>>>>> Stashed changes
 
 const image = require("../assets/BackgroundImage.png");
 

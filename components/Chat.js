@@ -8,6 +8,7 @@ import {
   onSnapshot,
   addDoc,
 } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Chat = ({ route, navigation, db, isConnected, storage }) => {
@@ -52,6 +53,20 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
     };
   }, [db, isConnected]);
 
+  // Load cached messages from AsyncStorage
+  const loadCachedMessages = async () => {
+    const cachedMessages = (await AsyncStorage.getItem("messages")) || "[]";
+    setMessages(JSON.parse(cachedMessages));
+  };
+
+  // Cache messages in AsyncStorage
+  const cacheMessages = async (messages) => {
+    try {
+      await AsyncStorage.setItem("messages", JSON.stringify(messages));
+    } catch (error) {
+      console.error("Error caching messages:", error);
+    }
+  };
 
   // Function to handle sending new messages
   const onSend = (newMessages) => {
@@ -82,7 +97,6 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
     );
   };
 
-
   return (
     <View style={{ flex: 1, backgroundColor: color }}>
       {/* GiftedChat component for rendering the chat interface */}
@@ -91,9 +105,7 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
         messages={messages}
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
-        renderActions={renderCustomActions}
         onSend={(messages) => onSend(messages)}
-        renderCustomView={renderCustomView}
         user={{
           _id: userID, // Extract the user ID from route.params
           name: name, // Extract the name from route.params
