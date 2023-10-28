@@ -11,7 +11,6 @@ import {
   Alert,
 } from "react-native";
 import {
-  getAuth,
   signInAnonymously,
   initializeAuth,
   getReactNativePersistence,
@@ -31,7 +30,9 @@ const backgroundColors = {
 
 const Start = ({ navigation }) => {
   // Initialize Firebase authentication
-  const auth = getAuth();
+  const auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+  });
   const [name, setName] = useState("");
   const [color, setColor] = useState(backgroundColors.a);
 
