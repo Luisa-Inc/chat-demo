@@ -10,7 +10,15 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import { getAuth, signInAnonymously } from "firebase/auth";
+import {
+  getAuth,
+  signInAnonymously,
+  initializeAuth,
+  getReactNativePersistence,
+} from "firebase/auth";
+
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const image = require("../assets/BackgroundImage.png");
 
