@@ -21,6 +21,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const image = require("../assets/BackgroundImage.png");
+const image = require("../assets/BackgroundImage.png");
 
 const backgroundColors = {
   a: "#090C08",
