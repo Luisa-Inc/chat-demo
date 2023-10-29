@@ -2,8 +2,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-
 
 // create navigator
 const stack = createNativeStackNavigator();

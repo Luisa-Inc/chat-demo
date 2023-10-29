@@ -8,7 +8,7 @@ import {
   onSnapshot,
   addDoc,
 } from "firebase/firestore";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Chat = ({ route, navigation, db, isConnected, storage }) => {
@@ -53,20 +53,16 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
     };
   }, [db, isConnected]);
 
-  // Load cached messages from ReactNativeAsyncStorage
+  // Load cached messages from AsyncStorage
   const loadCachedMessages = async () => {
-    const cachedMessages =
-      (await ReactNativeAsyncStorage.getItem("messages")) || "[]";
+    const cachedMessages = (await AsyncStorage.getItem("messages")) || "[]";
     setMessages(JSON.parse(cachedMessages));
   };
 
-  // Cache messages in ReactNativeAsyncStorage
+  // Cache messages in AsyncStorage
   const cacheMessages = async (messages) => {
     try {
-      await ReactNativeAsyncStorage.setItem(
-        "messages",
-        JSON.stringify(messages)
-      );
+      await AsyncStorage.setItem("messages", JSON.stringify(messages));
     } catch (error) {
       console.error("Error caching messages:", error);
     }

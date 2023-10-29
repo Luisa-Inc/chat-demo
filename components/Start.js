@@ -10,13 +10,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import {
-  signInAnonymously,
-  initializeAuth,
-  getReactNativePersistence,
-} from "firebase/auth";
-
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 
 const image = require("../assets/BackgroundImage.png");
@@ -30,9 +24,7 @@ const backgroundColors = {
 
 const Start = ({ navigation }) => {
   // Initialize Firebase authentication
-  const auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-  });
+  const auth = getAuth();
   const [name, setName] = useState("");
   const [color, setColor] = useState(backgroundColors.a);
 
