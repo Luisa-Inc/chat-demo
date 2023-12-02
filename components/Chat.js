@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
-import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
+import { useState, useEffect } from "react";
+import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
+import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import {
   collection,
   query,
-  orderBy,
-  onSnapshot,
   addDoc,
+  onSnapshot,
+  orderBy,
 } from "firebase/firestore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Chat = ({ route, navigation, db, isConnected, storage }) => {
@@ -53,21 +52,6 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
     };
   }, [db, isConnected]);
 
-  // Load cached messages from AsyncStorage
-  const loadCachedMessages = async () => {
-    const cachedMessages = (await AsyncStorage.getItem("messages")) || "[]";
-    setMessages(JSON.parse(cachedMessages));
-  };
-
-  // Cache messages in AsyncStorage
-  const cacheMessages = async (messages) => {
-    try {
-      await AsyncStorage.setItem("messages", JSON.stringify(messages));
-    } catch (error) {
-      console.error("Error caching messages:", error);
-    }
-  };
-
   // Function to handle sending new messages
   const onSend = (newMessages) => {
     console.log("onSend function called with:", newMessages);
@@ -106,6 +90,7 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
         onSend={(messages) => onSend(messages)}
+        renderCustomView={renderCustomView}
         user={{
           _id: userID, // Extract the user ID from route.params
           name: name, // Extract the name from route.params
