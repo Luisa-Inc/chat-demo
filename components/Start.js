@@ -1,13 +1,15 @@
-import { useState } from "react";
 import {
-  ImageBackground,
+  View,
   StyleSheet,
   Text,
   TextInput,
+  ImageBackground,
   TouchableOpacity,
-  View,
+  KeyboardAvoidingView,
+  Alert,
 } from "react-native";
-import Chat from "./Chat";
+import { useState } from "react";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 const Start = ({ navigation }) => {
   const [username, setUsername] = useState("");
