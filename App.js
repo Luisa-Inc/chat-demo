@@ -13,11 +13,13 @@ import {
 } from "firebase/firestore";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useEffect } from "react";
-import { LogBox, Alert } from "react-native";
-import { getStorage } from "firebase/storage";
+
 
 // Create the navigator
 const Stack = createNativeStackNavigator();
+
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
 const App = () => {
   // Get network connection status
@@ -49,7 +51,7 @@ const App = () => {
 
   // Initialize Cloud Firestore and get a reference to the service
   const db = getFirestore(app);
-  const storage = getStorage(app);
+
 
   return (
     <NavigationContainer>
