@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { getAuth, signInAnonymously } from "firebase/auth";
 
-
 const image = require("../assets/BackgroundImage.png");
 
 const backgroundColors = {
