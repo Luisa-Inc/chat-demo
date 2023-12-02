@@ -1,114 +1,108 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
+import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  ImageBackground,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  ScrollView,
-  Alert,
-} from "react-native";
-import { getAuth, signInAnonymously } from "firebase/auth";
+  collection,
+  query,
+  addDoc,
+  onSnapshot,
+  orderBy,
+} from "firebase/firestore";
 
-const image = require("../assets/BackgroundImage.png");
 
-const backgroundColors = {
-  a: "#090C08",
-  b: "#474056",
-  c: "#8A95A5",
-  d: "#B9C6AE",
-};
+const Chat = ({ route, navigation, db, isConnected, storage }) => {
+  const { name, color, userID } = route.params; // Get the name and selected background color for the chat
+  const [messages, setMessages] = useState([]);
 
-const Start = ({ navigation }) => {
-  // Initialize Firebase authentication
-  const auth = getAuth();
-  const [name, setName] = useState("");
-  const [color, setColor] = useState(backgroundColors.a);
+  let unsubMessages;
 
-  const signInUser = () => {
-    // Sign in anonymously using Firebase
-    signInAnonymously(auth)
-      .then((result) => {
-        // Navigate to the Chat screen with user information
-        navigation.navigate("Chat", {
-          userID: result.user.uid,
-          name: name,
-          color: color,
+  useEffect(() => {
+    navigation.setOptions({ title: name });
+  }, []);
+
+  useEffect(() => {
+    if (isConnected === true) {
+      if (unsubMessages) {
+        unsubMessages();
+      }
+      unsubMessages = null;
+
+      // Listen for new messages in Firestore
+      const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+      unsubMessages = onSnapshot(q, (querySnapshot) => {
+        let newMessages = [];
+        querySnapshot.forEach((doc) => {
+          newMessages.push({
+            _id: doc.id,
+            ...doc.data(),
+            createdAt: new Date(doc.data().createdAt.toMillis()),
+          });
         });
-        Alert.alert("Signed in Successfully!");
-      })
-      .catch((error) => {
-        Alert.alert("Unable to sign in, try again later.", error);
+        setMessages(newMessages);
+        cacheMessages(newMessages); // Cache the new messages
       });
+    } else {
+      loadCachedMessages();
+    }
+
+    return () => {
+      if (unsubMessages) {
+        unsubMessages();
+      }
+    };
+  }, [db, isConnected]);
+
+  // Function to handle sending new messages
+  const onSend = (newMessages) => {
+    console.log("onSend function called with:", newMessages);
+    addDoc(collection(db, "messages"), newMessages[0]);
+  };
+
+  // Custom rendering of the input toolbar based on network connectivity
+  const renderInputToolbar = (props) => {
+    if (isConnected) return <InputToolbar {...props} />;
+    else return null;
+  };
+
+  // Custom styling for chat message bubbles
+  const renderBubble = (props) => {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: "#000",
+          },
+          left: {
+            backgroundColor: "#FFF",
+          },
+        }}
+      />
+    );
   };
 
   return (
-    <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-      <ScrollView contentContainerStyle={styles.container}>
-        {/* Render the Chat App title */}
-        <Text style={styles.appTitle}>Chat App</Text>
-        <View style={styles.inputContainer}>
-          <KeyboardAvoidingView
-            style={styles.inputContainer}
-            behavior="padding"
-            enabled
-          >
-            {/* Input field for user's nickname */}
-            <TextInput
-              style={styles.textInput}
-              value={name}
-              onChangeText={setName}
-              placeholder="Nickname"
-              placeholderTextColor="#757083"
-            />
-            <Text style={styles.textColorSelector}>
-              Choose background color:
-            </Text>
-            <View style={styles.colorSelector}>
-              {/* Background color selection buttons */}
-              <TouchableOpacity
-                style={[
-                  styles.circle,
-                  color === backgroundColors.a && styles.selectedCircle,
-                  { backgroundColor: backgroundColors.a },
-                ]}
-                onPress={() => setColor(backgroundColors.a)}
-              ></TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.circle,
-                  color === backgroundColors.b && styles.selectedCircle,
-                  { backgroundColor: backgroundColors.b },
-                ]}
-                onPress={() => setColor(backgroundColors.b)}
-              ></TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.circle,
-                  color === backgroundColors.c && styles.selectedCircle,
-                  { backgroundColor: backgroundColors.c },
-                ]}
-                onPress={() => setColor(backgroundColors.c)}
-              ></TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.circle,
-                  color === backgroundColors.d && styles.selectedCircle,
-                  { backgroundColor: backgroundColors.d },
-                ]}
-                onPress={() => setColor(backgroundColors.d)}
-              ></TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
-          {/* Button to start chatting */}
-          <TouchableOpacity style={styles.button} onPress={signInUser}>
-            <Text style={styles.buttonText}>Start Chatting</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </ImageBackground>
+    <View style={{ flex: 1, backgroundColor: color }}>
+      {/* GiftedChat component for rendering the chat interface */}
+
+      <GiftedChat
+        messages={messages}
+        renderBubble={renderBubble}
+        renderInputToolbar={renderInputToolbar}
+        onSend={(messages) => onSend(messages)}
+        renderCustomView={renderCustomView}
+        user={{
+          _id: userID, // Extract the user ID from route.params
+          name: name, // Extract the name from route.params
+        }}
+      />
+      {Platform.OS === "android" ? (
+        <KeyboardAvoidingView behavior="height" />
+      ) : null}
+      {Platform.OS === "ios" ? (
+        <KeyboardAvoidingView behavior="padding" />
+      ) : null}
+    </View>
   );
 };
 
@@ -116,62 +110,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-  },
-  image: {
-    flex: 1,
-    justifyContent: "space-between",
-    padding: "6%",
-  },
-  appTitle: {
-    fontSize: 45,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    alignSelf: "center",
-  },
-  inputContainer: {
-    backgroundColor: "#FFFFFF",
-    padding: "6%",
-    paddingBottom: 20,
-  },
-  textInput: {
-    fontSize: 16,
-    fontWeight: "300",
-    color: "#757083",
-    padding: 15,
-    borderWidth: 1,
-    borderColor: "#757083",
-    marginTop: 15,
-    marginBottom: 15,
-  },
-  textColorSelector: {
-    fontSize: 16,
-    fontWeight: "300",
-    color: "#8A95A5",
-    marginBottom: 10,
-  },
-  colorSelector: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  circle: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-  },
-  selectedCircle: {
-    borderWidth: 2,
-    borderColor: "#FF0000",
-  },
-  button: {
-    backgroundColor: "#757083",
-    padding: 10,
-  },
-  buttonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    textAlign: "center",
+    alignItems: "center",
   },
 });
 
-export default Start;
+export default Chat;
